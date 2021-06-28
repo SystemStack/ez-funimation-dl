@@ -1,0 +1,42 @@
+{
+  "name": "ez-funimation-dl",
+  "version": "1.0.0",
+  "description": "Easily download fair and personal use anime from funimation",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "webpack",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SystemStack/ez-funimation-dl.git"
+  },
+  "keywords": [
+    "funimation",
+    "download",
+    "typescript"
+  ],
+  "author": "Levi Broadnax",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SystemStack/ez-funimation-dl/issues"
+  },
+  "homepage": "https://github.com/SystemStack/ez-funimation-dl#readme",
+  "dependencies": {
+    "@types/filesystem": "^0.0.31",
+    "node-fetch": "^2.6.1",
+    "prompts": "^2.4.1",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.5",
+    "@types/node-fetch": "^2.5.10",
+    "@types/prompts": "^2.0.13",
+    "nodemon": "^2.0.7",
+    "ts-loader": "^9.2.3",
+    "webpack": "^5.40.0",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
