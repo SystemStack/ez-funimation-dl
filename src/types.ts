@@ -21,10 +21,26 @@ export interface IdSearchResult {
   languages: string[];
 }
 
-export interface EpisodeSearchQuery {
+export interface CatalogSearchQuery {
   animeId: string;
 }
 
-export interface EpisodeSearchResult {
-
+interface ShowParent {
+  thumb: string;
+  title: string;
+  poster: string;
+  slug: string;
+  synopsis: string;
+  type: string;
+  banner: string;
+  id: number;
+}
+export interface Show {
+  title: string;
+  number: string;
+  externalItemId: string;
+  id: number;
+  mediaCategory: "season" | "extras" | "movie" | unknown;
+  order: number;
+  parent: ShowParent;
 }

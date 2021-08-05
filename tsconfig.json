@@ -5,15 +5,24 @@
     "files": true,
   },
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "CommonJS",
     "outDir": "./dist/",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts", "webpack.config.js"
   ],
   "exclude": [
     "node_modules"
+  ],
+  "types": [
+    "node",
+    "ts-node",
+    "filesystem",
+    "prompts",
+    "typescript"
   ]
 }

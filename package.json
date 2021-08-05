@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "Easily download fair and personal use anime from funimation",
   "main": "src/index.ts",
+  "private": true,
+  "type": "commonjs",
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "build": "webpack",
+    "dev": "ts-node src/index.ts",
+    "build": "npx webpack",
     "start": "node dist/index.js"
   },
   "repository": {
@@ -24,18 +26,18 @@
   },
   "homepage": "https://github.com/SystemStack/ez-funimation-dl#readme",
   "dependencies": {
-    "@types/filesystem": "^0.0.31",
     "node-fetch": "^2.6.1",
-    "prompts": "^2.4.1",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.3.4"
+    "prompts": "^2.4.1"
   },
   "devDependencies": {
-    "@types/node": "^15.12.5",
+    "@types/filesystem": "^0.0.32",
+    "@types/node": "^16.4.12",
     "@types/node-fetch": "^2.5.10",
     "@types/prompts": "^2.0.13",
-    "nodemon": "^2.0.7",
-    "ts-loader": "^9.2.3",
+    "@types/webpack": "^5.28.0",
+    "nodemon": "^2.0.7",    "ts-loader": "^9.2.3",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5",
     "webpack": "^5.40.0",
     "webpack-node-externals": "^3.0.0"
   }
