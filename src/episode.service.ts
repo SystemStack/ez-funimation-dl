@@ -4,7 +4,6 @@ import {
   downloadAPIRoute,
   episodeCatalogRoute,
   episodeSeasonRoute,
-  s3Bucket,
   userAgent,
 } from "./config";
 import { Show } from "./types";
@@ -61,11 +60,12 @@ export async function GetEpisodeUrls(
     language
   );
 
-  return await Promise.all(
+  const result = await Promise.all(
     episodesList.map(async (url: string) => {
       return await _getEpisodeUrls(url, language, authHeader);
     })
   );
+  return result.filter((e: string | undefined) => e !== undefined);
 }
 
 async function _getEpisodeUrls(
@@ -85,7 +85,9 @@ async function _getEpisodeUrls(
     .then((res: any): string | void => {
       for (const e of res.items[0].media[0].mediaChildren) {
         if (e.ext === "m3u8" && e.language === language) {
-          return e.filePath.replaceAll(s3Bucket, downloadAPIRoute);
+          return `${downloadAPIRoute}${
+            e.filePath.split("FunimationStoreFront/")[1]
+          }`;
         }
       }
     })
