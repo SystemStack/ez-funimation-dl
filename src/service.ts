@@ -1,5 +1,11 @@
-import { GetAccessToken } from "./access";
-import { SOURCE_API, userAgent } from "./config";
+const fetch = require("node-fetch");
+import { GetAuthHeader } from "./access";
+import {
+  catalogSearchRoute,
+  idSearchRoute,
+  loginRoute,
+  userAgent,
+} from "./config";
 import {
   CatalogSearchQuery,
   IdSearchQuery,
@@ -8,14 +14,8 @@ import {
   UserCredential,
 } from "./types";
 
-const fetch = require("node-fetch");
-const loginRoute = `${SOURCE_API}auth/login/`;
-const historyRoute = `${SOURCE_API}source/funimation/history/`; //todo could be fun
-const idSearchRoute = `${SOURCE_API}source/funimation/search/?q=`;
-const catalogSearchRoute = `${SOURCE_API}source/catalog/title/`;
-
 export async function Login(creds: UserCredential): Promise<string> {
-  return fetch(`${SOURCE_API}${loginRoute}`, {
+  return await fetch(loginRoute, {
     method: "POST",
     body: JSON.stringify(creds),
     headers: {
@@ -23,22 +23,16 @@ export async function Login(creds: UserCredential): Promise<string> {
     },
     proxy: true,
   })
-    .then(function (res: any) {
-      return res.json();
-    })
-    .then(function (json: any) {
-      return json.token;
-    })
-    .catch(function (err: any) {
-      return err;
-    });
+    .then((res) => res.json())
+    .then((json) => json.token)
+    .catch((err: unknown) => err);
 }
 
 export async function QueryIds(
   query: IdSearchQuery
 ): Promise<IdSearchResult[]> {
-  let authHeader = _getAuthHeader();
-  return fetch(`${idSearchRoute}${query.title}`, {
+  const authHeader = await GetAuthHeader();
+  return await fetch(`${idSearchRoute}${query.title}`, {
     method: "GET",
     proxy: true,
     headers: {
@@ -46,20 +40,14 @@ export async function QueryIds(
       Authorization: authHeader,
     },
   })
-    .then(function (res: any) {
-      return res.json();
-    })
-    .then(function (json: any) {
-      return json.items.hits;
-    })
-    .catch(function (err: any) {
-      return err;
-    });
+    .then((res) => res.json())
+    .then((json) => json?.items?.hits)
+    .catch((err: unknown) => err);
 }
 
 export async function QueryCatalog(query: CatalogSearchQuery): Promise<Show[]> {
-  let authHeader = _getAuthHeader();
-  return fetch(`${catalogSearchRoute}${query.animeId}/`, {
+  const authHeader = await GetAuthHeader();
+  return await fetch(`${catalogSearchRoute}${query.animeId}/`, {
     method: "GET",
     proxy: true,
     headers: {
@@ -67,15 +55,10 @@ export async function QueryCatalog(query: CatalogSearchQuery): Promise<Show[]> {
       Authorization: authHeader,
     },
   })
-    .then((res: any) => res.json())
-    .then((json: any) => json.items[0])
+    .then((res) => res.json())
+    .then((json) => json?.items[0])
     .then((seasons: any): Show[] =>
       seasons.children.filter((e: any) => e.mediaCategory === "season")
     )
-    .catch((err: any) => err);
-}
-
-async function _getAuthHeader(): Promise<string> {
-  let token = await GetAccessToken();
-  return `Token ${token}`;
+    .catch((err: unknown) => err);
 }

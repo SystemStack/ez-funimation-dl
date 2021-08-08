@@ -15,14 +15,16 @@ async function _idSearch(): Promise<IdSearchResult[]> {
       message: "Search Funimation🔎",
     },
   ];
-  let answer = <IdSearchQuery>await prompts(questions);
+  const answer = <IdSearchQuery>await prompts(questions);
   return QueryIds(answer);
 }
 export async function IdSearch(): Promise<IdSearchResult[]> {
-  let result = await _idSearch();
-
-  if (result.length === 0) {
-    console.log("No results");
+  let result: IdSearchResult[] = [];
+  while (result.length === 0) {
+    result = await _idSearch();
+    if (result.length === 0) {
+      console.warn("No results");
+    }
   }
   return result;
 }

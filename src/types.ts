@@ -14,10 +14,10 @@ export interface IdSearchResult {
   starRating: number;
   slug: string;
   synopsis: string;
-  quality: [Object];
+  quality: [unknown];
   id: string;
   txDate: number;
-  image: [Object];
+  image: [unknown];
   languages: string[];
 }
 
@@ -25,7 +25,7 @@ export interface CatalogSearchQuery {
   animeId: string;
 }
 
-interface ShowParent {
+export interface ShowParent {
   thumb: string;
   title: string;
   poster: string;
