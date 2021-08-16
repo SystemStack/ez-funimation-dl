@@ -1,5 +1,24 @@
 # EZ Funimation Downloader WIP
 Requires Node.
+
+
+<h3 align="center">First Time Setup
+  
+![login](https://user-images.githubusercontent.com/7132948/129517266-22f5b26c-401d-43a8-906d-2b4e08582b7d.gif)
+</h3>
+
+
+
+<h3 align="center">Easily Search and Download Anime
+  
+  ![download](https://user-images.githubusercontent.com/7132948/129517602-68ebbf9f-8afd-4de7-b10c-05ddd2bfd609.gif)
+</h3>
+
+<h3 align="center">Download in the background and keep searching!
+  
+![downloadsdone](https://user-images.githubusercontent.com/7132948/129517687-f0474d78-07ae-4e67-9bba-5624f3ba45fa.gif)
+</h3>
+
 # Usage
 - Clone the repository
 - Download and install node (test by running `node -v`)
