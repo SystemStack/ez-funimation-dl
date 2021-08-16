@@ -1,5 +1,5 @@
 # EZ Funimation Downloader WIP
-Requires Node.
+Requires [Node](https://nodejs.org/en/download/current/)
 
 
 <h3 align="center">First Time Setup
@@ -31,9 +31,11 @@ Requires Node.
   - Rules for pull requests: None
 
 # TODO 
-- [] Subtitles
-- [] Internationalization
-- [] Code cleanup (Most strings are in config.ts)
+- [ ] Subtitles
+- [ ] Internationalization
+- [ ] Code cleanup (Most strings are in config.ts)
+- [ ] Quality Preferences
+- [ ] Output options
 - [X] download files (Partial, filenames are bad)
 - [X] Episode list
 - [X] readme
