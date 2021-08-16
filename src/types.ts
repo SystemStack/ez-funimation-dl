@@ -53,5 +53,13 @@ export interface UserPreferences {
     | "Japanese"
     | "Spanish"
     | "Portuguese";
-  QualityPreference: number;
+  BackgroundPreference: boolean;
+}
+
+export interface IEpisodeResult {
+  url: string;
+  seasonNum: string;
+  titleName: string;
+  episodeName: string;
+  episodeOrder: number;
 }

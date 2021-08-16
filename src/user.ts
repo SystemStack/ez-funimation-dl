@@ -2,7 +2,7 @@ import { access, readFile, writeFile } from "fs/promises";
 import prompts, { PromptObject } from "prompts";
 import { UserPreferences } from "./types";
 
-const audioOptions = ["Japanese", "English"];
+const audioOptions = ["English", "Japanese"];
 const subtitleOptions = [
   "None",
   "English",
@@ -50,16 +50,11 @@ async function GetPreferences(): Promise<UserPreferences> {
       }),
     },
     {
-      type: "number",
-      name: "QualityPreference",
-      message: "Quality (10 is highest, 1 is lowest):",
-      initial: 10,
-      min: 1,
-      max: 10,
-      validate: (QualityPreference) =>
-        QualityPreference > 10 || QualityPreference < 1
-          ? "Pick a number from 1 (lowest) to 10 (highest)"
-          : true,
+      type: "confirm",
+      name: "BackgroundPreference",
+      message: `Would you like downloads to run in the background?\
+(No is easier if you're only downloading one show):`,
+      initial: true,
     },
   ];
   const answer = <UserPreferences>await prompts(questions);
@@ -70,6 +65,6 @@ function isUserPreferences(obj?: UserPreferences): obj is UserPreferences {
     obj != null &&
     "AudioPreference" in obj &&
     "SubtitlePreference" in obj &&
-    "QualityPreference" in obj
+    "BackgroundPreference" in obj
   );
 }

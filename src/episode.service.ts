@@ -1,27 +1,21 @@
+/* eslint-disable max-len */
 const fetch = require("node-fetch");
 import { GetAuthHeader } from "./access";
 import {
-  downloadAPIRoute,
   episodeCatalogRoute,
   episodeSeasonRoute,
+  SOURCE_API,
   userAgent,
 } from "./config";
-import { Show } from "./types";
-
+import { IEpisodeResult, Show } from "./types";
 async function _getEpisodesCatalogUrls(
   seasonIds: Set<number>,
   parentId: number,
   language: string
-): Promise<string[]> {
+): Promise<IEpisodeResult[]> {
   const authHeader = await GetAuthHeader();
   return fetch(
-    `${episodeSeasonRoute}\
-?sort=order\
-&sort_direction=ASC\
-&limit=-1\
-&offset=-1\
-&language=${language}\
-&title_id=${parentId}`,
+    `${episodeSeasonRoute}?sort=order&sort_direction=ASC&limit=-1&offset=-1&language=${language}&title_id=${parentId}`,
     {
       method: "GET",
       proxy: true,
@@ -33,25 +27,26 @@ async function _getEpisodesCatalogUrls(
   )
     .then((res) => res.json())
     .then((res) => {
-      return [
-        ...new Set(
-          res.items
-            .flatMap((e: any) => {
-              if (seasonIds.has(e.item.seasonId)) {
-                return `${episodeCatalogRoute}${e.item.titleSlug}/${e.item.episodeSlug}/`;
-              }
-            })
-            .filter((e: string | undefined) => e != undefined)
-        ),
-      ];
+      return res.items
+        .map((e) => {
+          if (seasonIds.has(e.item.seasonId)) {
+            return {
+              url: `${episodeCatalogRoute}${e.item.titleSlug}/${e.item.episodeSlug}/`,
+              titleName: e.item.titleName,
+              seasonNum: e.item.seasonNum,
+              episodeName: e.item.episodeName,
+              episodeOrder: e.item.episodeOrder,
+            };
+          }
+        })
+        .filter((e: IEpisodeResult) => e != undefined && e.url != undefined);
     });
 }
 
-// todo, too arcane for anyone else to participate here
 export async function GetEpisodeUrls(
   query: Show[],
   language: string
-): Promise<string[]> {
+): Promise<IEpisodeResult[]> {
   const authHeader = await GetAuthHeader();
   const seasonIds = new Set(query.flatMap((e) => e.id));
   const episodesList = await _getEpisodesCatalogUrls(
@@ -59,14 +54,20 @@ export async function GetEpisodeUrls(
     query[0].parent.id,
     language
   );
+
   const result = await Promise.all(
-    episodesList.map(async (url: string) => {
-      return await _getEpisodeUrls(url, language, authHeader);
+    episodesList.map(async (obj: IEpisodeResult) => {
+      return {
+        ...obj,
+        url: await _getEpisodeUrls(obj.url, language, authHeader),
+      };
     })
   );
-  return result.filter((e: string | undefined) => e !== undefined);
-}
 
+  return result.filter(
+    (e: IEpisodeResult) => e != undefined && e.url != undefined
+  );
+}
 async function _getEpisodeUrls(
   url: string,
   language: string,
@@ -81,12 +82,26 @@ async function _getEpisodeUrls(
     },
   })
     .then((res) => res.json())
-    .then((res: any): string | void => {
+    .then(async (res): Promise<string | void> => {
+      // Then get mp4 Url from catalog...
       for (const e of res.items[0].media[0].mediaChildren) {
-        if (e.ext === "m3u8" && e.language === language) {
-          return `${downloadAPIRoute}${
-            e.filePath.split("FunimationStoreFront/")[1]
-          }`;
+        if (e.ext === "mp4" && e.language === language) {
+          return await fetch(
+            `${SOURCE_API}source/catalog/video/${e.parent.id}/signed`,
+            {
+              method: "GET",
+              proxy: true,
+              headers: {
+                "user-agent": userAgent,
+                Authorization: authHeader,
+                devicetype: "Android",
+              },
+            }
+          )
+            .then((res) => res.json())
+            .then((res) => {
+              return res.items.filter((e) => e.videoType === "mp4")[0].src;
+            });
         }
       }
     })
