@@ -1,9 +1,15 @@
-import { readFile, writeFile } from "fs/promises";
+import { access, readFile, writeFile } from "fs/promises";
 import prompts, { PromptObject } from "prompts";
 import { Login } from "./service";
 import { UserCredential } from "./types";
 
 const tokenFile = ".accesstoken";
+
+async function _assertPreferencesFile() {
+  return access(tokenFile)
+    .then(() => true)
+    .catch(() => writeFile(tokenFile, ""));
+}
 
 async function _readTokenFile(): Promise<string> {
   return await readFile(tokenFile, "utf8");
@@ -31,6 +37,7 @@ async function _login(): Promise<string> {
 }
 
 async function _getAccessToken(): Promise<string> {
+  await _assertPreferencesFile();
   let token = await _readTokenFile();
   if (token === "") {
     token = await _login();
@@ -38,6 +45,7 @@ async function _getAccessToken(): Promise<string> {
   }
   return token;
 }
+
 export async function GetAuthHeader(): Promise<string> {
   const token = await _getAccessToken();
   return `Token ${token}`;

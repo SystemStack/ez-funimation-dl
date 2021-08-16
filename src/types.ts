@@ -44,3 +44,14 @@ export interface Show {
   order: number;
   parent: ShowParent;
 }
+
+export interface UserPreferences {
+  AudioPreference: "Japanese" | "English";
+  SubtitlePreference:
+    | "None"
+    | "English"
+    | "Japanese"
+    | "Spanish"
+    | "Portuguese";
+  QualityPreference: number;
+}

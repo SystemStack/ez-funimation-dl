@@ -1,15 +1,28 @@
 import prompts, { PromptObject } from "prompts";
+import { DownloadM3u8 } from "./download.service";
 import { GetEpisodeUrls } from "./episode.service";
 import { CatalogSearch, IdSearch } from "./search";
 import { IdSearchResult, Show } from "./types";
+import { GetUserSettings } from "./user";
 (async () => {
+  const UserPreferences = await GetUserSettings();
+  console.table(UserPreferences);
   for (;;) {
     const idSearchResult = await IdSearch();
     const animeId = await IdSelect(idSearchResult);
     const episodeResult = await CatalogSearch(animeId);
     const seasonsToDownload = await SeasonSelect(episodeResult);
-    const m3u8DownloadUrls = await GetEpisodeUrls(seasonsToDownload);
-    console.log(m3u8DownloadUrls);
+    const m3u8DownloadUrls = await GetEpisodeUrls(
+      seasonsToDownload,
+      UserPreferences.AudioPreference
+    );
+    const m3u8Urls = await DownloadM3u8(
+      m3u8DownloadUrls,
+      UserPreferences.QualityPreference
+    );
+    console.log(m3u8Urls);
+
+    // const downloadVideoResults = await DownloadTs(m3u8Urls);
   }
 })();
 

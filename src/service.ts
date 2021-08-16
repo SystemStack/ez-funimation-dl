@@ -24,7 +24,7 @@ export async function Login(creds: UserCredential): Promise<string> {
     proxy: true,
   })
     .then((res) => res.json())
-    .then((json) => json.token)
+    .then((res) => res.token)
     .catch((err: unknown) => err);
 }
 

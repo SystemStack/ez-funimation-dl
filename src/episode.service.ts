@@ -50,7 +50,7 @@ async function _getEpisodesCatalogUrls(
 // todo, too arcane for anyone else to participate here
 export async function GetEpisodeUrls(
   query: Show[],
-  language = "English"
+  language: string
 ): Promise<string[]> {
   const authHeader = await GetAuthHeader();
   const seasonIds = new Set(query.flatMap((e) => e.id));
@@ -59,7 +59,6 @@ export async function GetEpisodeUrls(
     query[0].parent.id,
     language
   );
-
   const result = await Promise.all(
     episodesList.map(async (url: string) => {
       return await _getEpisodeUrls(url, language, authHeader);
